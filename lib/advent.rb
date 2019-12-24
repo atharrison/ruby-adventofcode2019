@@ -15,8 +15,8 @@ class Advent
     # day.load("data/day#{daynum}/day#{daynum}_input_sample1.txt")
     # day.load("data/day#{daynum}/day#{daynum}_input_sample2.txt")
     #
-    day.run_part1
-    # day.run_part2
+    # day.run_part1
+    day.run_part2
   end
 end
 
