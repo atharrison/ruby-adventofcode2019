@@ -1,25 +1,36 @@
 class IntCodeputer
 
+  attr_accessor :tape
+  attr_accessor :ptr
+
   def initialize
     @tape = Array.new
+    @tape_original = Array.new
     @ptr = 0
+    @filename = ''
   end
 
   def load(filename)
+    @filename = filename
     f = File.open(filename)
-    while line = f.gets do
-      @tape = line.split(',').map{|s| s.to_i}
-    end
+    line = f.gets
 
+    @tape_original = line.split(',').map(&:to_i)
+    @tape = @tape_original.map(&:to_i)
+  end
+
+  def reset
+    @tape = @tape_original.dup
+    @ptr = 0
   end
 
   def execute
 
-    cmd = self.val(0)
-    while cmd != 99 do
+    instr = self.param(0)
+    while instr != 99 do
 
-      puts("OpCode: #{@tape[@ptr..(@ptr+3)]}")
-      case cmd
+      # puts("OpCode: #{@tape[@ptr..(@ptr+3)]}")
+      case instr
       when 1
         # Add
         self.add
@@ -27,23 +38,39 @@ class IntCodeputer
         # Multiply
         self.mult
       else
-        puts "Unknown Command! #{cmd} at position #{@ptr}"
+        puts "Unknown Instruction! #{instr} at position #{@ptr}"
         return
       end
 
-      @ptr += 4
-      cmd = self.val(0)
+      instr = self.next_instr
     end
   end
 
-  def val(offset)
+  def value
+    @tape[@ptr]
+  end
+
+  def value_at(ptr)
+    @tape[ptr]
+  end
+
+  def halt_result
+    @tape[0]
+  end
+
+  def next_instr(shift=4)
+    @ptr += shift
+    self.value
+  end
+
+  def param(offset)
     @tape[@ptr+offset]
   end
 
   def add
-    out_ptr = self.val(3)
-    a_ptr = self.val(1)
-    b_ptr = self.val(2)
+    out_ptr = self.param(3)
+    a_ptr = self.param(1)
+    b_ptr = self.param(2)
     a_val = @tape[a_ptr]
     b_val = @tape[b_ptr]
     # puts "Setting #{out_ptr} to #{a_val + b_val} (from #{a_ptr} and #{b_ptr})"
@@ -51,25 +78,12 @@ class IntCodeputer
   end
 
   def mult
-    out_ptr = self.val(3)
-    a_ptr = self.val(1)
-    b_ptr = self.val(2)
+    out_ptr = self.param(3)
+    a_ptr = self.param(1)
+    b_ptr = self.param(2)
     a_val = @tape[a_ptr]
     b_val = @tape[b_ptr]
     # puts "Setting #{out_ptr} to #{a_val + b_val} (from #{a_ptr} and #{b_ptr})"
     @tape[out_ptr] = a_val * b_val
-  end
-
-
-  def run_day2_part1
-
-    # First, adjust the tape
-    @tape[1] = 12
-    @tape[2] = 2
-
-    #Run program
-    self.execute
-    # puts @tape
-    puts "Part 1 Result: #{@tape[0]}"
   end
 end
