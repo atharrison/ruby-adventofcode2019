@@ -13,7 +13,7 @@ class Day01
     end
   end
 
-  def run
+  def run_part1
 
     total = 0
 
@@ -22,9 +22,27 @@ class Day01
       total -= 2
     end
 
-    puts "Total: #{total}"
+    puts "Total Part 1: #{total}"
   end
 
-  private
+  def run_part2
+    total = 0
+
+    for d in @data do
+      module_total = 0
+
+      fuel_part = d / 3 - 2
+
+      while fuel_part > 0
+        module_total += fuel_part
+
+        fuel_part = fuel_part / 3 - 2
+      end
+      total += module_total
+    end
+
+    puts "Total Part 2: #{total}"
+
+  end
 
 end

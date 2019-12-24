@@ -7,7 +7,8 @@ class Advent
 
     day = Day01.new
     day.load
-    day.run
+    day.run_part1
+    day.run_part2
   end
 end
 
